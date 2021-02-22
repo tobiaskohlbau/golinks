@@ -1,10 +1,12 @@
 package main
 
 import (
+	"encoding/csv"
 	"fmt"
 	"html/template"
 	"log"
 	"net/http"
+	"os"
 	"strings"
 
 	"github.com/go-chi/chi"
@@ -68,7 +70,53 @@ var tpl = template.Must(template.New("tpl").Parse(`
 </html>
 `))
 
+func importCSV(path string) error {
+	file, err := os.Open(path)
+	if err != nil {
+		return fmt.Errorf("failed to open import file: %w", err)
+	}
+	defer file.Close()
+	r := csv.NewReader(file)
+	r.Comma = ';'
+	records, err := r.ReadAll()
+	if err != nil {
+		return fmt.Errorf("failed to read import file: %w", err)
+	}
+
+	db, err := bolt.Open("registry.db", 0600, nil)
+	if err != nil {
+		return fmt.Errorf("failed to open registry db: %w", err)
+	}
+	defer db.Close()
+
+	err = db.Update(func(tx *bolt.Tx) error {
+		bucket, err := tx.CreateBucketIfNotExists([]byte("redirects"))
+		if err != nil {
+			return fmt.Errorf("failed to create redirects bucket: %w", err)
+		}
+
+		for _, record := range records {
+			if len(record) != 2 {
+				return fmt.Errorf("can't import bad line: %s", record)
+			}
+			if err := bucket.Put([]byte(record[0]), []byte(record[1])); err != nil {
+				return fmt.Errorf("failed to import redirect: %s->%s: %w", record[0], record[1], err)
+			}
+		}
+		return nil
+	})
+	if err != nil {
+		return fmt.Errorf("failed to prepare registry db: %w", err)
+	}
+
+	return nil
+}
+
 func execute() error {
+	if os.Args[1] == "import" {
+		return importCSV(os.Args[2])
+	}
+
 	db, err := bolt.Open("registry.db", 0600, nil)
 	if err != nil {
 		return fmt.Errorf("failed to open registry db: %w", err)
