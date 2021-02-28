@@ -1,0 +1,57 @@
+.card {
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 12px 0px;
+    padding: 20px;
+    border-radius: 4px;
+    border: 1px solid rgb(235, 238, 245);
+    background-color: rgb(255, 255, 255);
+    color: rgb(48, 49, 51);
+    transition: all 0.3s ease 0s;
+    display: flex;
+    flex-direction: column;
+    min-width: 240px;
+}
+
+.cardTitle {
+    margin: 12px 0;
+    font-weight: 600;
+    font-size: 18px;
+}
+
+.cardContent {
+    overflow: hidden;
+    flex-grow: 1;
+}
+
+.cardActions {
+    margin-top: 8px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.button {
+    margin-left: 24px;
+    background-color: rgb(64, 158, 255);
+    color: rgb(255, 255, 255);
+    font-weight: 500;
+    padding: 12px 20px;
+    appearance: none;
+    cursor: pointer;
+    font-size: 14px;
+    border: 1px solid rgb(220, 223, 230);
+    border-radius: 4px;
+    transition: all 0.1s ease 0s;
+}
+
+.button:hover {
+    background-color: rgb(102, 177, 255);
+    border-color: rgb(102, 177, 255);
+    outline: none;
+}
+
+.button:active {
+    background-color: rgb(64, 158, 255);
+}
+
+.button:foucs {
+    outline: none;
+}

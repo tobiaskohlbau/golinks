@@ -1,0 +1,32 @@
+<!doctype html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Registry</title>
+    <meta name="description" content="registry">
+
+    <link href="/static/registry.css" rel="stylesheet">
+    <link href="/static/common.css" rel="stylesheet">
+    <script type="module" src="/static/main.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        {{ range .Entries }}
+        <div class="card">
+            <div class="cardTitle">go/{{ .Source }}</div>
+            <div class="cardContent">
+                <a href="{{ .Destination }}">{{ .Destination }}</a>
+            </div>
+            <div class="cardActions">
+                <button class="button" onclick="editItem('{{ .Source }}')">Edit</button>
+                <button class="button" onclick="deleteItem(this, '{{ .Source }}')">Delete</button>
+            </div>
+        </div>
+        {{end}}
+    </div>
+</body>
+
+</html>

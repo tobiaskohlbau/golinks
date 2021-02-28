@@ -1,0 +1,14 @@
+body {
+    display: flex;
+    justify-content: space-around;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+}
+
+.card {
+    width: 1000px;
+    margin-top: 16px;
+}

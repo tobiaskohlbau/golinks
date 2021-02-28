@@ -1,0 +1,20 @@
+<!doctype html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>{{ .Path }}</title>
+    <meta name="description" content="{{ .Path }}">
+
+    <link href="/static/edit.css" rel="stylesheet">
+    <script type="module" src="/static/main.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <input type="text" id="destination" onkeyup="processChange()" value="{{ .Destination }}" />
+    </div>
+</body>
+
+</html>
