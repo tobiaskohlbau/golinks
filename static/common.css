@@ -28,6 +28,11 @@
     justify-content: flex-end;
 }
 
+a,
+a:visited {
+    color: rgb(48, 49, 51);
+}
+
 .button {
     margin-left: 24px;
     background-color: rgb(64, 158, 255);
@@ -54,4 +59,32 @@
 
 .button:foucs {
     outline: none;
+}
+
+@media (prefers-color-scheme: dark) {
+    body {
+        background: #000;
+    }
+    .card {
+        border: 1px solid rgb(20, 20, 10);
+        background-color: rgb(0, 0, 0);
+        color: rgb(207, 206, 204);
+    }
+    a,
+    a:visited {
+        color: rgb(207, 206, 204);
+    }
+    .button {
+        background-color: rgb(153, 78, 0);
+        border: 1px solid rgb(90, 84, 71);
+    }
+    .button:hover {
+        background-color: rgb(191, 97, 0);
+        border: 1px solid rgb(20, 20, 10);
+    }
+    input {
+        border: 1px solid rgb(20, 20, 10);
+        background-color: rgb(0, 0, 0);
+        color: rgb(207, 206, 204);
+    }
 }
