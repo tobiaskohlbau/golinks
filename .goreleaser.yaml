@@ -26,14 +26,12 @@ dockers:
 - image_templates:
   - "ghcr.io/tobiaskohlbau/golinks:{{ .Version }}-amd64"
   use: buildx
-  skip_push: true
   dockerfile: Dockerfile
   build_flag_templates:
   - "--platform=linux/amd64"
 - image_templates:
   - "ghcr.io/tobiaskohlbau/golinks:{{ .Version }}-arm64v8"
   use: buildx
-  skip_push: true
   goarch: arm64
   dockerfile: Dockerfile
   build_flag_templates:
