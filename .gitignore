@@ -1,2 +1,5 @@
 .vscode
 registry.db
+
+dist/
+golinks
