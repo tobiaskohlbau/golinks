@@ -131,6 +131,7 @@ func jwtHandler(db *bolt.DB, jwksURL string, headerName string, claimName string
 
 			if jwtBase64 == "" {
 				http.Error(w, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
+				return
 			}
 
 			token, err := jwt.Parse(jwtBase64, jwks.Keyfunc)
