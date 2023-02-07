@@ -22,7 +22,7 @@ import (
 //go:embed static templates
 var contentEmbedded embed.FS
 
-func importCSV(path string) error {
+func importCSV(dbPath string, path string) error {
 	file, err := os.Open(path)
 	if err != nil {
 		return fmt.Errorf("failed to open import file: %w", err)
@@ -35,7 +35,7 @@ func importCSV(path string) error {
 		return fmt.Errorf("failed to read import file: %w", err)
 	}
 
-	db, err := bolt.Open("registry.db", 0600, nil)
+	db, err := bolt.Open(dbPath, 0600, nil)
 	if err != nil {
 		return fmt.Errorf("failed to open registry db: %w", err)
 	}
@@ -66,13 +66,14 @@ func importCSV(path string) error {
 
 func execute() error {
 	dev := flag.Bool("dev", false, "enable development mode")
+	dbPath := flag.String("data", "/data/registry.db", "path to store database")
 	jwksURL := flag.String("jwksURL", "", "JWKS endpoint.")
 	jwtHeaderName := flag.String("jwtHeaderName", "", "JWT Headername")
 	jwtClaimName := flag.String("jwtClaimName", "", "JWT Clainname")
 	flag.Parse()
 
 	if len(os.Args) > 1 && os.Args[1] == "import" {
-		return importCSV(os.Args[2])
+		return importCSV(*dbPath, os.Args[2])
 	}
 
 	var content fs.FS = contentEmbedded
@@ -80,7 +81,7 @@ func execute() error {
 		content = os.DirFS(".")
 	}
 
-	db, err := bolt.Open("registry.db", 0600, nil)
+	db, err := bolt.Open(*dbPath, 0600, nil)
 	if err != nil {
 		return fmt.Errorf("failed to open registry db: %w", err)
 	}
