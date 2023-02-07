@@ -152,12 +152,13 @@ func jwtHandler(db *bolt.DB, jwksURL string, headerName string, claimName string
 				http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 			}
 
+			var user User
 			err = db.Update(func(tx *bolt.Tx) error {
 				bucket := tx.Bucket([]byte("users"))
 
 				userData := bucket.Get([]byte(username))
 				if userData == nil {
-					user := User{
+					user = User{
 						Username: username,
 					}
 					data, err := json.Marshal(user)
@@ -168,15 +169,13 @@ func jwtHandler(db *bolt.DB, jwksURL string, headerName string, claimName string
 					if err != nil {
 						return fmt.Errorf("failed to store new user: %w", err)
 					}
-				}
-				var user User
-				err := json.Unmarshal(userData, &user)
-				if err != nil {
-					return fmt.Errorf("failed to unmarshal stored user: %w", err)
+				} else {
+					err := json.Unmarshal(userData, &user)
+					if err != nil {
+						return fmt.Errorf("failed to unmarshal stored user: %w", err)
+					}
 				}
 
-				ctx := context.WithValue(r.Context(), "user", user)
-				next.ServeHTTP(w, r.WithContext(ctx))
 				return nil
 			})
 
@@ -185,6 +184,9 @@ func jwtHandler(db *bolt.DB, jwksURL string, headerName string, claimName string
 				http.Error(w, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
 				return
 			}
+
+			ctx := context.WithValue(r.Context(), "user", user)
+			next.ServeHTTP(w, r.WithContext(ctx))
 		})
 	}
 }
