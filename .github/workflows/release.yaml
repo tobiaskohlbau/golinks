@@ -17,6 +17,8 @@ jobs:
         with:
           fetch-depth: 0
       - uses: actions/setup-go@v6.1.0
+        with:
+          go-version-file: 'go.mod'
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3.7.0
       - name: Login to container registry
