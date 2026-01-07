@@ -8,7 +8,7 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/go-chi/chi"
+	"github.com/go-chi/chi/v5"
 	bolt "go.etcd.io/bbolt"
 )
 

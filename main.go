@@ -11,10 +11,11 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
-	"github.com/MicahParks/keyfunc"
-	"github.com/go-chi/chi"
-	"github.com/golang-jwt/jwt/v4"
+	"github.com/MicahParks/keyfunc/v3"
+	"github.com/go-chi/chi/v5"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/tobiaskohlbau/golinks/server"
 	bolt "go.etcd.io/bbolt"
 )
@@ -111,7 +112,7 @@ func execute() error {
 }
 
 func jwtHandler(db *bolt.DB, jwksURL string, headerName string, claimName string) func(http.Handler) http.Handler {
-	jwks, err := keyfunc.Get(jwksURL, keyfunc.Options{})
+	jwks, err := keyfunc.NewDefault([]string{jwksURL})
 	if err != nil {
 		panic(err)
 	}
@@ -142,7 +143,8 @@ func jwtHandler(db *bolt.DB, jwksURL string, headerName string, claimName string
 			}
 
 			claims := token.Claims.(jwt.MapClaims)
-			if err := claims.Valid(); err != nil {
+			var v = jwt.NewValidator(jwt.WithLeeway(5 * time.Second))
+			if err := v.Validate(claims); err != nil {
 				log.Println(err)
 				http.Error(w, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
 				return
