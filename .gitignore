@@ -3,3 +3,5 @@ registry.db
 
 dist/
 golinks
+
+.direnv/
