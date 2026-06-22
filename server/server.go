@@ -78,8 +78,8 @@ func (s *server) handleRegistry() http.HandlerFunc {
 func (s *server) handleEdit() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if strings.HasSuffix(r.URL.Path, "/") {
-			r.URL.Path = r.URL.Path + "/%s"
-			http.Redirect(w, r, r.URL.String(), http.StatusTemporaryRedirect)
+			redirectURL := r.URL.JoinPath("%25s")
+			http.Redirect(w, r, redirectURL.String(), http.StatusTemporaryRedirect)
 			return
 		}
 		key := strings.TrimPrefix(r.URL.Path, "/edit/")
@@ -150,7 +150,7 @@ func (s *server) handleRedirect() http.HandlerFunc {
 				if len(paths[:i]) > 0 {
 					elements = append(elements, paths[:i]...)
 				}
-				elements = append(elements, "%s")
+				elements = append(elements, "%25s")
 				if len(paths[i+1:]) > 0 {
 					elements = append(elements, paths[i+1:]...)
 				}
@@ -166,10 +166,7 @@ func (s *server) handleRedirect() http.HandlerFunc {
 				http.Redirect(w, r, r.URL.String(), http.StatusTemporaryRedirect)
 				return nil
 			}
-			url := string(entry)
-			if strings.Contains(url, "%s") {
-				url = strings.Replace(url, "%s", paths[position], -1)
-			}
+			url := strings.ReplaceAll(string(entry), "%s", paths[position])
 
 			http.Redirect(w, r, url, http.StatusTemporaryRedirect)
 			return nil
